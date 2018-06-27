@@ -4,13 +4,217 @@
 	<title>Jogo em Canvas</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<style type="text/css">
+		html, body {
+			margin: 0;
+		  background: green;
+		}
+
+		#placarJogo {
+			position: absolute;
+		  left: 50px;
+		  top: 29px;
+		  font-size: 30px;
+		  font-family: monospace;
+		  color: blue;
+		  border: 6px solid black;
+		  background: white;
+		}
+
+		#botaoEsquerda {
+			position: absolute;
+			font-size: 60px;
+			background: white;
+			top: 480px;
+			left: 100px;
+			padding-left: 20px;
+			padding-right: 20px;
+			user-select: none;
+		}
+
+		#botaoDireita {
+		  position: absolute;
+		  font-size: 60px;
+		  background: white;
+		  top: 480px;
+		  left: 650px;
+		  padding-left: 20px;
+		  padding-right: 20px;
+		  user-select: none;
+		}
+	</style>
 </head>
 <body>
 	<div id="placarJogo">000</div>
 	<div id="botaoEsquerda" onclick="if(posicaoPlayer > 300){moveParaEsquerda()}">&#x2039;</div>
 	<div id="botaoDireita" onclick="if(posicaoPlayer < 470){moveParaDireita()}">&#x203A;</div>
 	<canvas id="mainCanvas" width="800" height="600"></canvas>
-	<script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript">
+		var canvas, canvasContext, alturaInicial = 1, randomico = 1, posicaoPlayer, posicaoListra = 0, razaoListra = 51,
+		posicaoRodaEsquerdaPlayer, posicaoRodaDireitaPlayer, relogioJogo, placarJogo = 0, larguraLateral = 300
+		const FPS = 60, VELOCIDADE = 1.001
+
+		window.onload = function() {
+			canvas = document.getElementById('mainCanvas')
+			canvasContext = canvas.getContext('2d')	
+			randomico = numeroRandomico(1, 100)
+			posicaoPlayer = ((canvas.width-200)/2)+90
+			placarJogo = Number(document.getElementById('placarJogo').innerHTML)
+			relogioJogo = setInterval(desenhaQuadrado, 1000/FPS)
+			larguraLateral = (canvas.width-200)/2
+			arrumaTela()
+		}
+
+		function desenhaQuadrado() {
+
+			if (alturaInicial <= canvas.height-3) {
+				alturaInicial = (alturaInicial+3) * VELOCIDADE
+				posicaoListra = (alturaInicial+3) * VELOCIDADE
+			} else {
+				placarJogo = placarJogo + 100
+				document.getElementById('placarJogo').innerHTML = placarJogo
+				alturaInicial = 1
+				randomico = numeroRandomico(1, 100)
+			}
+
+			//pista cinza
+			canvasContext.fillStyle = 'gray'
+			canvasContext.fillRect(0,0,canvas.width,canvas.height)
+
+			//lateral pista esquerda
+			canvasContext.fillStyle = 'green'
+			canvasContext.fillRect(0,0,larguraLateral,canvas.height)
+
+			//lateral pista direita
+			canvasContext.fillStyle = 'green'
+			canvasContext.fillRect(canvas.width-larguraLateral,0,larguraLateral,canvas.height)
+
+			//listras do meio
+			for (var f=0 ; f <= 600 ; f++) {
+				if (f%razaoListra === 0 === true) {
+					
+					canvasContext.fillStyle = 'yellow'
+					canvasContext.fillRect(canvas.width/2,(razaoListra-f) + (posicaoListra/2),10,20)
+
+					canvasContext.fillStyle = 'yellow'
+					canvasContext.fillRect(canvas.width/2,f + (posicaoListra/2),10,20)
+				}
+			}
+
+			//carro do player
+			desenharCarroPlayer()
+			
+			if (randomico <= 30) {
+				desenharCarro(((canvas.width-200)/2)+10)
+			}	else
+			if ((randomico > 30) &&(randomico <= 60)) {
+				desenharCarro(((canvas.width-200)/2)+90)
+			}	else
+			if (randomico > 60) {
+				desenharCarro(((canvas.width-200)/2)+160)
+			}
+		}
+
+		function desenharCarroPlayer() {
+			
+			posicaoRodaEsquerdaPlayer = posicaoPlayer
+			posicaoRodaDireitaPlayer = posicaoPlayer+20
+			//roda esquerda
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicaoPlayer,canvas.height - 50,10,10)	
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicaoPlayer,canvas.height - 50+30,10,10)
+			canvasContext.fillStyle = 'blue'
+			canvasContext.fillRect(posicaoPlayer+10,canvas.height - 50+10,10,10)
+			canvasContext.fillStyle = 'white'
+			canvasContext.fillRect(posicaoPlayer+10,canvas.height - 50+20,10,10)
+			
+			//roda direita
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicaoPlayer+20,canvas.height - 50,10,10)
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicaoPlayer+20,canvas.height - 50+30,10,10)
+		}
+
+		function desenharCarro(posicao) {
+			
+			if (
+				((posicaoRodaEsquerdaPlayer == posicao) ||
+				(posicaoRodaEsquerdaPlayer == posicao+20) ||
+				(posicaoRodaEsquerdaPlayer == posicao+10) ||
+				(posicaoRodaEsquerdaPlayer == posicao-10) ||
+
+				(posicaoRodaDireitaPlayer == posicao+20) || 
+				(posicaoRodaDireitaPlayer == posicao+10) || 
+				(posicaoRodaDireitaPlayer == posicao+30) || 
+				(posicaoRodaDireitaPlayer == posicao)) &&
+				
+				((alturaInicial+39).toFixed(0) == canvas.height-50)
+			) {
+				placarJogo = 0
+				document.getElementById('placarJogo').innerHTML = '000'
+				clearInterval(relogioJogo)
+
+				setTimeout(function(){
+					posicaoPlayer = ((canvas.width-200)/2)+90
+					alturaInicial = 1
+					relogioJogo = setInterval(desenhaQuadrado, 1000/FPS)
+				}, 3000)
+			}
+
+			// console.log((alturaInicial+40).toFixed(0), canvas.height-50)
+
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicao,alturaInicial,10,10)
+			
+			//roda esquerda
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicao,alturaInicial+30,10,10)
+			canvasContext.fillStyle = 'red'
+			canvasContext.fillRect(posicao+10,alturaInicial+10,10,10)
+			canvasContext.fillStyle = 'white'
+			canvasContext.fillRect(posicao+10,alturaInicial+20,10,10)
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicao+20,alturaInicial,10,10)
+			
+			//roda direita
+			canvasContext.fillStyle = 'black'
+			canvasContext.fillRect(posicao+20,alturaInicial+30,10,10)
+		}
+
+		function numeroRandomico(maximum, minimum) {
+		  return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+		}
+
+		document.addEventListener('keydown', function(event) {
+		  if ((event.keyCode == 37)&&(posicaoPlayer > ((canvas.width-200)/2))) {
+		    moveParaEsquerda()
+		  }
+		  else if ((event.keyCode == 39)&&(posicaoPlayer < ((canvas.width-200)/2)+170)) {
+		    moveParaDireita()
+		  }
+		})
+
+		function moveParaEsquerda() {
+			posicaoPlayer = posicaoPlayer - 10
+		}
+
+		function moveParaDireita() {
+			posicaoPlayer = posicaoPlayer + 10
+		}
+
+		window.onresize = function(event) {
+		  arrumaTela()
+		}
+
+		function arrumaTela() {
+
+			if (window.innerWidth <= 869) {
+				document.getElementById('mainCanvas').style.width = window.innerWidth.toString()+'px'
+				document.getElementById('botaoEsquerda').style.left = (window.innerWidth/2-200).toString()+'px'
+				document.getElementById('botaoDireita').style.left = (window.innerWidth-100).toString()+'px'
+			}
+		}
+	</script>
 </body>
 </html>
