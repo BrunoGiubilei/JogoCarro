@@ -12,35 +12,35 @@
 
 		#placarJogo {
 			position: absolute;
-		  left: 50px;
-		  top: 29px;
-		  font-size: 30px;
+		  left: 20px;
+		  top: 20px;
+		  font-size: 20px;
 		  font-family: monospace;
 		  color: blue;
-		  border: 6px solid black;
+		  border: 3px solid black;
 		  background: white;
 		}
 
 		#botaoEsquerda {
-			position: absolute;
-			font-size: 60px;
-			background: white;
-			top: 300px;
-			left: 100px;
-			padding-left: 20px;
-			padding-right: 20px;
-			user-select: none;
+			position: fixed;
+	    font-size: 60px;
+	    background: white;
+	    bottom: 20px;
+	    left: 20px;
+	    padding-left: 20px;
+	    padding-right: 20px;
+	    user-select: none;
 		}
 
 		#botaoDireita {
-		  position: absolute;
-		  font-size: 60px;
-		  background: white;
-		  top: 300px;
-		  left: 650px;
-		  padding-left: 20px;
-		  padding-right: 20px;
-		  user-select: none;
+		  position: fixed;
+	    font-size: 60px;
+	    background: white;
+	    bottom: 20px;
+	    padding-left: 20px;
+	    padding-right: 20px;
+	    user-select: none;
+	    right: 20px;
 		}
 	</style>
 </head>
@@ -211,8 +211,8 @@
 
 			if (window.innerWidth <= 869) {
 				document.getElementById('mainCanvas').style.width = window.innerWidth.toString()+'px'
-				document.getElementById('botaoEsquerda').style.left = (window.innerWidth/2-200).toString()+'px'
-				document.getElementById('botaoDireita').style.left = (window.innerWidth-100).toString()+'px'
+				// document.getElementById('botaoEsquerda').style.left = (window.innerWidth/2-200).toString()+'px'
+				// document.getElementById('botaoDireita').style.left = (window.innerWidth-100).toString()+'px'
 			}
 		}
 	</script>
