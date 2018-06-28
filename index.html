@@ -130,9 +130,7 @@
 			}	else
 			if (randomico > 60) {
 				desenharCarro(((canvas.width-200)/2)+160)
-				if (placarJogo > 1000) {
-					desenhaBarra(((canvas.width-200)/2)+10)
-				}
+				desenhaBarra(((canvas.width-200)/2)+10)
 			}
 		}
 
@@ -141,6 +139,7 @@
 			if ((alturaInicial+84).toFixed(0) >= canvas.height-102) {
 				if (((posicaoRodaEsquerdaPlayer+20 >= posicao)&&(posicao == ((canvas.width-200)/2)+70)) ||
 					((posicaoRodaEsquerdaPlayer-120 < posicao)&&(posicao == ((canvas.width-200)/2)+10))) {
+					if ((alturaInicial >= 414)&&(alturaInicial < 460))
 					perdeu()
 				}
 			}
@@ -232,7 +231,11 @@
 		}
 
 		function numeroRandomico(maximum, minimum) {
-		  return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+
+			var retorno = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum
+			retorno = retorno.toFixed(0)
+			
+		  return retorno
 		}
 
 		document.addEventListener('keydown', function(event) {
